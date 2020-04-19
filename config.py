@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.secret_key = "Secret Key" # Deze key wordt gebruikt om wachtwoorden te salten.
@@ -9,3 +10,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/crud' # proto
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)

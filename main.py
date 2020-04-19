@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.secret_key = "Secret Key" # Deze key wordt gebruikt om wachtwoorden te salten.
@@ -9,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:''@localhos
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-
+bcrypt = Bcrypt(app)
 
 # Database aanmaken
 # TODO: Importen uit aparte bestanden
@@ -29,17 +30,31 @@ class Product(db.Model):
 
 class User(db.Model):
   id = db.Column(db.Integer, primary_key = True)
-  name = db.Column(db.String(100))
+  username = db.Column(db.String(100))
   password = db.Column(db.String(100))
 
 
-  def __init__(self, name, email, phone):
-    self.name = name
+  def __init__(self, username, email, phone):
+    self.username = username
     self.password = password
     self.phone = phone
 
+# Login
+@app.route("/", methods = ['GET', 'POST'])
+def Login():
+  # return bcrypt.generate_password_hash('geheim')
+  if request.method == 'POST':
+    user = User.query.filter_by(username = request.form["username"]).first()
+    if user and bcrypt.check_password_hash(user.password, request.form["password"]):
+      return redirect(url_for('Index'))
+    else:
+      flash('Controlleer uw email en wachtwoord')
+      return render_template("login.html")
+  else: 
+    return render_template("login.html")
+
 # Homepagina
-@app.route('/')
+@app.route('/dashboard')
 def Index():
   return render_template("index.html", products = Product.query.all())
 
