@@ -2,7 +2,7 @@
 
 Laad hier ook het SQL bestand wat in de root van deze applicatie te vinden is.
 
-# 2) Installeer Flas, SQLAlchemy en mysql-connector-python
+# 2) Installeer Flask, SQLAlchemy en mysql-connector-python
 
 pip install Flask
 
